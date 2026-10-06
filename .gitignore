@@ -1,3 +1,11 @@
+# ============= Environment & secrets (NEVER commit) =============
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+secrets*
+
 # Logs
 logs
 *.log
