@@ -1,24 +1,20 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, redirect } from "@tanstack/react-router";
+import { supabase } from "@/integrations/supabase/client";
 
+// Root route: send authenticated users to their tasks, everyone else to login.
 export const Route = createFileRoute("/")({
+  ssr: false,
+  beforeLoad: async () => {
+    const { data } = await supabase.auth.getSession();
+    throw redirect({ to: data.session ? "/tasks" : "/login" });
+  },
   head: () => ({
     meta: [
       { title: "Task Scheduler" },
-      { name: "description", content: "Task Scheduler application" },
+      { name: "description", content: "Task Scheduler — plan and manage your daily tasks." },
       { property: "og:title", content: "Task Scheduler" },
-      { property: "og:description", content: "Task Scheduler application" },
-      { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "summary_large_image" },
+      { property: "og:description", content: "Plan and manage your daily tasks." },
     ],
   }),
-  component: Index,
+  component: () => null,
 });
-
-// Empty shell — awaiting requirements before building the Task Scheduler.
-function Index() {
-  return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <h1 className="text-2xl font-semibold text-foreground">Task Scheduler</h1>
-    </div>
-  );
-}
